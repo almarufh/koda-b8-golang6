@@ -6,11 +6,11 @@ import (
 	"time"
 )
 
-func Worker(urut int, wait int, proces string) {
+func Worker(keyLockUrut *int, urut int, wait int, proces string) {
 	fmt.Printf("Membuat Gorutine proses %s\n", proces)
 	for {
 		Mut.Lock()
-		if Counter == urut {
+		if *keyLockUrut == urut {
 			fmt.Printf("Memproses pesanan %s\n", proces)
 			timeWait := strconv.Itoa(wait)
 			fmt.Printf("---[ %s Selesai dalam %s Detik ]---\n", proces, timeWait)
@@ -24,8 +24,8 @@ func Worker(urut int, wait int, proces string) {
 			OrderSuccesSlice = append(OrderSuccesSlice, proces+" dalam "+timeWait+" Detik")
 			OrderSucces <- proces + " Disajikan\n\n"
 			Wait.Done()
-			time.Sleep(1 * time.Millisecond) // Jedaa proses Kak klo tidak jeda lebih cepat lanjut proses selanjutnya daripada receiver menerima data
-			Counter++
+			time.Sleep(2 * time.Millisecond) // Jedaa proses Kak klo tidak jeda lebih cepat lanjut proses selanjutnya daripada receiver menerima data
+			*keyLockUrut++
 			Mut.Unlock()
 			break
 		}
