@@ -38,6 +38,10 @@ var BookOrders []Request = []Request{
 
 var Wait sync.WaitGroup = sync.WaitGroup{}
 
-func Global() (*[]Request, *sync.WaitGroup) {
-	return &BookOrders, &Wait
+var Mut sync.Mutex = sync.Mutex{}
+
+var OrderSucces []string = []string{}
+
+func Global() (*[]Request, *sync.WaitGroup, *sync.Mutex) {
+	return &BookOrders, &Wait, &Mut
 }
