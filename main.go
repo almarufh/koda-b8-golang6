@@ -7,21 +7,23 @@ import (
 )
 
 func main() {
+	keyLockUrut := 0
 	addCounter := 0
 	for x := range utils.BookOrders {
 		request := utils.BookOrders[x].Request
 		time := utils.BookOrders[x].Time
 		urut := utils.BookOrders[x].Urut
 		utils.Wait.Add(1)
-		go utils.Worker(urut, time, request)
+		go utils.Worker(&keyLockUrut, urut, time, request)
 		addCounter++
 	}
 
 	if addCounter == len(utils.BookOrders) {
 		time.Sleep(time.Duration(1) * time.Second)
 		fmt.Printf("\n\n")
-		utils.Counter = 1
+		keyLockUrut = 1
 	}
+
 	defer utils.Wait.Wait()
 
 	fmt.Println(<-utils.OrderSucces)
