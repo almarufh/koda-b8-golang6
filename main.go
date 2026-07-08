@@ -34,6 +34,6 @@ func main() {
 	time.Sleep(2 * time.Millisecond)
 
 	for x := range utils.OrderSuccesSlice {
-		fmt.Printf("%d. %s\n", x, utils.OrderSuccesSlice[x])
+		fmt.Printf("%d. %s\n", x+1, utils.OrderSuccesSlice[x])
 	}
 }
