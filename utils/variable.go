@@ -40,8 +40,7 @@ var Wait sync.WaitGroup = sync.WaitGroup{}
 
 var Mut sync.Mutex = sync.Mutex{}
 
-var OrderSucces []string = []string{}
+var OrderSuccesSlice []string = []string{}
+var OrderSucces chan string = make(chan string)
 
-func Global() (*[]Request, *sync.WaitGroup, *sync.Mutex) {
-	return &BookOrders, &Wait, &Mut
-}
+var Counter int = -1
