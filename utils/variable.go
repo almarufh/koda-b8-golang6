@@ -42,5 +42,3 @@ var Mut sync.Mutex = sync.Mutex{}
 
 var OrderSuccesSlice []string = []string{}
 var OrderSucces chan string = make(chan string)
-
-var Counter int = -1
