@@ -39,5 +39,5 @@ var BookOrders []Request = []Request{
 var Wait sync.WaitGroup = sync.WaitGroup{}
 
 func Global() (*[]Request, *sync.WaitGroup) {
-	return &BookOrder, &Wait
+	return &BookOrders, &Wait
 }
