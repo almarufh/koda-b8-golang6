@@ -31,7 +31,8 @@ jobs:
       - name: Download program from artifact
         uses: actions/download-artifact@v8
         with:
-          name: ${{needs.build-program.outputs.output}}
+          name: upload-programs
+          path: .
       - name: Create nginx Dockerfile
         run: |
           cat << 'EOF' > Dockerfile
@@ -53,12 +54,12 @@ jobs:
       - name: Download program from artifact
         uses: actions/download-artifact@v8
         with:
-          name: ${{needs.build-program.outputs.output}}
+          name: upload-programs
+          path: .
       - name: Compress programs
-        run: zip -r ./gorutine-control-${{ github.ref_name }}.zip ./*
+        run: zip -r ./gorutine-control-${{ github.ref_name }}.zip ./program
       - name: Release to Github
         uses: softprops/action-gh-release@v3
         with:
           files: |
             gorutine-control-${{ github.ref_name }}.zip
- 
