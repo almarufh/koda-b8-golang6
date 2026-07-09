@@ -22,8 +22,7 @@ jobs:
         id: upload-programs
         with:
           name: upload-programs
-          path: |
-            program/*
+          path: program/
   build-images:
     name: "Build images"
     needs: build-program
@@ -35,14 +34,13 @@ jobs:
       - name: Download program from artifact
         uses: actions/download-artifact@v8
         with:
-          name: upload-programs
-          path: files
+          name: ${{needs.build-program.outputs.output}}
       - name: Create nginx Dockerfile
         run: |
           cat << 'EOF' > Dockerfile
           FROM alpine:latest
           WORKDIR /app
-          COPY ./files/ .
+          COPY ./program/ .
           EOF
       - name: Build image
         run: docker build -t ghcr.io/${{github.actor}}/gorutine-control:latest .
@@ -61,10 +59,9 @@ jobs:
       - name: Download program from artifact
         uses: actions/download-artifact@v8
         with:
-          name: upload-programs
-          path: file
+          name: ${{needs.build-program.outputs.output}}
       - name: Compress programs
-        run: zip -r ./gorutine-control-${{ github.ref_name }}.zip ./file/*
+        run: zip -r ./gorutine-control-${{ github.ref_name }}.zip ./program/*
       - name: Release to Github
         uses: softprops/action-gh-release@v3
         with:
