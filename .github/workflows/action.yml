@@ -1,65 +1,31 @@
-name: Publish App 
+name: Publish App
 run-name: ${{github.event.head_commit.message}}
 on:
   push:
     tags:
       - v*
 jobs:
-  build-program:
-    name: "Build program"
+  publish-program:
+    name: "Publish program"
     runs-on: ubuntu-latest
-    outputs:
-      output: ${{ steps.upload-programs.outputs.artifact-id }}
     steps:
       - name: Get source code
         uses: actions/checkout@v7
-      - name: Install dependencies
-        run: go mod tidy
-      - name: Build program
-        run: go build -o program main.go
-      - name: Uploads program in artifact
-        uses: actions/upload-artifact@v7
-        id: upload-programs
-        with:
-          name: upload-programs
-          path: program
-  build-images:
-    name: "Build images"
-    needs: build-program
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download program from artifact
-        uses: actions/download-artifact@v8
-        with:
-          name: upload-programs
-          path: .
-      - name: Create nginx Dockerfile
-        run: |
-          cat << 'EOF' > Dockerfile
-          FROM alpine:latest
-          WORKDIR /app
-          COPY . .
-          EOF
-      - name: Build image
+      - name: Build images
         run: docker build -t ghcr.io/${{github.actor}}/gorutine-control:latest .
       - name: Login to ghcr.io
         run: echo -n ${{secrets.GITHUB_TOKEN}} | docker login ghcr.io --username ${{github.actor}} --password-stdin
       - name: Push image to ghcr
         run: docker push ghcr.io/${{github.actor}}/gorutine-control:latest
-  release-app:
-    name: "Release new app version"
-    needs: build-program
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download program from artifact
-        uses: actions/download-artifact@v8
-        with:
-          name: upload-programs
-          path: .
-      - name: Compress programs
+      - name: Install dependencies
+        run: go mod tidy
+      - name: Build program
+        run: go build -o program main.go
+      - name: Compress files images
         run: zip -r ./gorutine-control-${{ github.ref_name }}.zip ./program
       - name: Release to Github
         uses: softprops/action-gh-release@v3
         with:
           files: |
             gorutine-control-${{ github.ref_name }}.zip
+ 
